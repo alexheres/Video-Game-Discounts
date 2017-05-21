@@ -10,7 +10,7 @@ The program can currently get data from 5 websites:
  - The items under "Top Deals" and "Best Seller"  from the website "https://www.gamesdeal.com/"
  - The items from the website "https://www.greenmangaming.com/", including their deal of the day
 
-The GUI is pretty simple, and is made of three parts using a BorderLayout. 
+The GUI is pretty simple, and is made of three parts using a JFrame with a BorderLayout. 
  - A JPanel containing a JLabel sits at the North section of the BorderLayout, and will tell you what website the program is parsing from (if you haven't parsed a site yet, it welcomes you to the main menu).
  - A JPanel for multiple buttons sits at the South section of the BorderLayout; there's a button for each of the websites listed above, and an exit button that simply closes the window. At the moment of clicking one of the website buttons, a function within the program retrieves and parses the HTML of the website corresponding to the button you clicked, allowing us to read its data in real time and store it.
  - Finally, the Center section of the BorderLayout is occupied by A JScrollPane (which is of course holding a JList, which also happens to contain our data). The data we parse from websites is displayed inside the JScrollPane, and by extension to the user. Data is displayed one website at a time.
