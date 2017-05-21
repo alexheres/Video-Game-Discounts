@@ -4,6 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.io.FileInputStream;
+import java.io.InputStream;
+ 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 public class SimpleGUI extends ParseWebsites{
 
@@ -13,6 +18,9 @@ public class SimpleGUI extends ParseWebsites{
 			  "HEYYEYAAEYAAAEYAEYAA",
 			  "Got the goods?"};
 	
+	private int num = 0;
+	private AudioStream sound;
+
 	public void createGUI() 
 	{
 		int randNum = ThreadLocalRandom.current().nextInt(0, titles.length);
@@ -20,9 +28,21 @@ public class SimpleGUI extends ParseWebsites{
 		frame.setLayout(new BorderLayout());
 		frame.setSize(1280,720);
 		
+		{
+			// Open an input stream to the audio file.
+			try {
+				InputStream in = new FileInputStream("Layer Cake.wav");
+				AudioStream as = new AudioStream(in);
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		} 
+		
 		ParseWebsites data = new ParseWebsites();
 		addComponentsToPane(frame, data);
 		
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
@@ -39,12 +59,18 @@ public class SimpleGUI extends ParseWebsites{
 	    // create controls JPanel and buttons, then add the buttons
 		JPanel controls = new JPanel();
 		controls.setLayout(new FlowLayout());
+		
+		// create the music button and its necessary components
+		JButton music = new JButton("Shop Theme: OFF");
+		
+		// create website buttons and exit buttons
 		JButton reddit = new JButton("Reddit");
 		JButton cheap = new JButton("CheapAssGamer");
 		JButton games = new JButton("Gamesdeal");
 		JButton green = new JButton("GreenManGaming");
 		JButton steam = new JButton("Steam");
 		JButton exit = new JButton("Exit");
+		controls.add(music);
 		controls.add(reddit);
 		controls.add(cheap);
 		controls.add(games);
@@ -61,6 +87,36 @@ public class SimpleGUI extends ParseWebsites{
 	    list.setVisibleRowCount(-1);
 	    JScrollPane listScroller = new JScrollPane(list);
 		
+	    try {
+ 			
+     		InputStream in = new FileInputStream("Layer Cake.wav");
+ 			AudioStream as = new AudioStream(in);
+ 			sound = as;
+	    
+	    } catch (Exception err) {
+     		err.printStackTrace();
+ 	    }
+	    
+	 // action when "music" button is pressed		
+	 		music.addActionListener(new ActionListener()
+	 		{
+	 	        public void actionPerformed(ActionEvent e)
+	 	        {
+	 	        		if (num == 0)
+	 	        		{
+	 	        			AudioPlayer.player.start(sound);
+	 	        			music.setText("Shop Theme: ON");
+	 	        		}
+	 	        	
+	 	        		else
+	 	        		{
+	 	        			AudioPlayer.player.stop(sound);
+	 	        			music.setText("Shop Theme: OFF");
+	 	        		}
+	 	        		num = ((num+1) % 2);		
+ 	        	    }
+	 	    });
+	    
 		// action when "Reddit" button is pressed		
 		reddit.addActionListener(new ActionListener()
 		{
@@ -138,14 +194,15 @@ public class SimpleGUI extends ParseWebsites{
 			{
 	        	// Exit this application
 	        	System.exit(0);
+	        	
+	        	if(num == 1)
+	        		AudioPlayer.player.stop(sound);
 	        }
 	    });
-
+		
 	    // add the JPanels and JList to pane's BorderLayout
 		pane.add(header, BorderLayout.NORTH);
 		pane.add(listScroller, BorderLayout.CENTER);
 		pane.add(controls, BorderLayout.SOUTH);
 	}
-
-
 }
